@@ -1,8 +1,8 @@
-\# References
+# References
 
 
 
-\## 1. Operating Systems Assignment
+## 1. Operating Systems Assignment
 
 
 
@@ -26,11 +26,11 @@ and submission requirements.
 
 
 
-\---
 
 
 
-\## 2. Python Documentation
+
+## 2. Python Documentation
 
 
 
@@ -44,11 +44,7 @@ as threads, locks, semaphores, and condition variables.
 
 
 
-\---
-
-
-
-\## 3. ChatGPT
+## 3. ChatGPT
 
 
 
@@ -70,11 +66,10 @@ AI assistance is documented separately in:
 
 
 
-\---
 
 
 
-\## 4. Synchronization Concepts
+## 4. Synchronization Concepts
 
 
 
