@@ -25,11 +25,11 @@ changes based on testing and understanding of the synchronization logic.
 
 
 
-\---
 
 
 
-\## 2. Initial Prompt
+
+## 2. Initial Prompt
 
 
 
@@ -65,15 +65,15 @@ test, and explain the code myself.
 
 
 
-\---
 
 
 
-\## 3. Important Follow-up Prompts
+
+## 3. Important Follow-up Prompts
 
 
 
-\### Readers-Writers - Semaphore
+### Readers-Writers - Semaphore
 
 
 
@@ -85,7 +85,7 @@ read concurrently while the writer gets exclusive access.
 
 
 
-\### Readers-Writers - Monitor
+### Readers-Writers - Monitor
 
 
 
@@ -95,7 +95,7 @@ Python locks and condition variables.
 
 
 
-\### Dining Philosophers - Semaphore
+### Dining Philosophers - Semaphore
 
 
 
@@ -115,7 +115,7 @@ a lock and condition variable.
 
 
 
-\### Execution Tracking
+### Execution Tracking
 
 
 
@@ -125,7 +125,7 @@ execution data. Help me record state transitions from the running program.
 
 
 
-\### Fork Tracking
+### Fork Tracking
 
 
 
@@ -135,7 +135,7 @@ philosopher owns each of the four forks.
 
 
 
-\### HTML Generation
+### HTML Generation
 
 
 
@@ -145,11 +145,10 @@ philosopher states, fork ownership, event timeline, and replay controls.
 
 
 
-\---
 
 
 
-\## 4. Manual Changes Made by the Student
+## 4. Manual Changes Made by the Student
 
 
 
@@ -193,11 +192,11 @@ AI-generated code without testing.
 
 
 
-\---
 
 
 
-\## 5. AI Error / Limitation Identified
+
+## 5. AI Error / Limitation Identified
 
 
 
@@ -231,11 +230,10 @@ tested and understood rather than accepted without verification.
 
 
 
-\---
 
 
 
-\## 6. HTML Simulation Development
+## 6. HTML Simulation Development
 
 
 
@@ -271,11 +269,11 @@ event timelines, and playback controls.
 
 
 
-\---
 
 
 
-\## 7. Reflection
+
+## 7. Reflection
 
 
 
