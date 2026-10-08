@@ -1,0 +1,663 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Dining Philosophers - Semaphore</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+.header {
+    background: #1f2937;
+    color: white;
+    padding: 18px 25px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+.header p {
+    margin: 6px 0 0;
+    opacity: 0.8;
+}
+
+.controls {
+    background: white;
+    padding: 15px 25px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+button,
+select {
+    padding: 8px 14px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #eeeeee;
+}
+
+.progress {
+    margin-left: auto;
+    font-weight: bold;
+}
+
+.main {
+    padding: 25px;
+}
+
+.resource-box {
+    background: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.resource-box h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.forks {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.fork {
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: #e5e7eb;
+    font-size: 14px;
+}
+
+.fork.owned {
+    background: #fbbf24;
+    font-weight: bold;
+}
+
+.simulator {
+    background: white;
+    border-radius: 12px;
+    min-height: 560px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.table {
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    background: #b87333;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.philosopher {
+    position: absolute;
+    width: 115px;
+    min-height: 90px;
+    border-radius: 12px;
+    background: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+    border: 3px solid transparent;
+}
+
+.philosopher .name {
+    font-weight: bold;
+}
+
+.philosopher .state {
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+.philosopher.active {
+    border-color: #2563eb;
+    transform: scale(1.08);
+}
+
+.p0 {
+    left: 50%;
+    top: 35px;
+    transform: translateX(-50%);
+}
+
+.p1 {
+    right: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.p2 {
+    left: 50%;
+    bottom: 35px;
+    transform: translateX(-50%);
+}
+
+.p3 {
+    left: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.fork-circle {
+    position: absolute;
+    width: 75px;
+    height: 45px;
+    border-radius: 10px;
+    background: #d1d5db;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.fork-circle.owned {
+    background: #fbbf24;
+}
+
+.f0 {
+    left: 50%;
+    top: 155px;
+    transform: translateX(-50%);
+}
+
+.f1 {
+    right: 155px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.f2 {
+    left: 50%;
+    bottom: 155px;
+    transform: translateX(-50%);
+}
+
+.f3 {
+    left: 155px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.state-THINKING {
+    background: #dbeafe;
+}
+
+.state-HUNGRY {
+    background: #fde68a;
+}
+
+.state-WAITING {
+    background: #fed7aa;
+}
+
+.state-ACQUIRING {
+    background: #ddd6fe;
+}
+
+.state-EATING {
+    background: #86efac;
+}
+
+.state-RELEASING {
+    background: #fca5a5;
+}
+
+.state-FINISHED {
+    background: #d1d5db;
+}
+
+.bottom {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.event-log {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.event {
+    padding: 7px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
+
+.event.current {
+    background: #dbeafe;
+    font-weight: bold;
+}
+
+.current-event {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>Dining Philosophers - Semaphore</h1>
+
+    <p>
+        Circular synchronization simulation generated from actual program execution
+    </p>
+
+</div>
+
+
+<div class="controls">
+
+    <button onclick="startSimulation()">Start</button>
+
+    <button onclick="pauseSimulation()">Pause</button>
+
+    <button onclick="resetSimulation()">Reset</button>
+
+    <label>Speed:</label>
+
+    <select id="speed">
+
+        <option value="1500">0.5x</option>
+        <option value="1000" selected>1x</option>
+        <option value="500">2x</option>
+        <option value="250">4x</option>
+
+    </select>
+
+    <div class="progress" id="progress">
+        0 / 28
+    </div>
+
+</div>
+
+
+<div class="main">
+
+    <div class="resource-box">
+
+        <h2>Fork Resources</h2>
+
+        <div class="forks" id="forkStatus"></div>
+
+    </div>
+
+
+    <div class="simulator">
+
+        <div class="table">
+            TABLE
+        </div>
+
+
+        <div class="philosopher p0"
+             id="p0">
+
+            <div class="name">
+                Philosopher 0
+            </div>
+
+            <div class="state"
+                 id="p0-state">
+                -
+            </div>
+
+        </div>
+
+
+        <div class="philosopher p1"
+             id="p1">
+
+            <div class="name">
+                Philosopher 1
+            </div>
+
+            <div class="state"
+                 id="p1-state">
+                -
+            </div>
+
+        </div>
+
+
+        <div class="philosopher p2"
+             id="p2">
+
+            <div class="name">
+                Philosopher 2
+            </div>
+
+            <div class="state"
+                 id="p2-state">
+                -
+            </div>
+
+        </div>
+
+
+        <div class="philosopher p3"
+             id="p3">
+
+            <div class="name">
+                Philosopher 3
+            </div>
+
+            <div class="state"
+                 id="p3-state">
+                -
+            </div>
+
+        </div>
+
+
+        <div class="fork-circle f0"
+             id="f0">
+            Fork 0
+        </div>
+
+        <div class="fork-circle f1"
+             id="f1">
+            Fork 1
+        </div>
+
+        <div class="fork-circle f2"
+             id="f2">
+            Fork 2
+        </div>
+
+        <div class="fork-circle f3"
+             id="f3">
+            Fork 3
+        </div>
+
+    </div>
+
+
+    <div class="bottom">
+
+        <div class="panel">
+
+            <h2>Current Event</h2>
+
+            <div class="current-event"
+                 id="currentEvent">
+                Simulation ready
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>Event Timeline</h2>
+
+            <div class="event-log"
+                 id="eventLog">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const snapshots = [{"event_number": 1, "time": 0.0, "actor": "Philosopher 0", "state": "THINKING", "forks": [null, null, null, null]}, {"event_number": 2, "time": 0.0, "actor": "Philosopher 1", "state": "THINKING", "forks": [null, null, null, null]}, {"event_number": 3, "time": 0.001, "actor": "Philosopher 2", "state": "THINKING", "forks": [null, null, null, null]}, {"event_number": 4, "time": 0.001, "actor": "Philosopher 3", "state": "THINKING", "forks": [null, null, null, null]}, {"event_number": 5, "time": 0.503, "actor": "Philosopher 3", "state": "HUNGRY", "forks": [null, null, null, null]}, {"event_number": 6, "time": 0.503, "actor": "Philosopher 3", "state": "WAITING", "forks": [null, null, null, null]}, {"event_number": 7, "time": 0.503, "actor": "Philosopher 3", "state": "ACQUIRING", "forks": [null, null, null, null]}, {"event_number": 8, "time": 0.504, "actor": "Philosopher 3", "state": "EATING", "forks": [3, null, null, 3]}, {"event_number": 9, "time": 0.636, "actor": "Philosopher 2", "state": "HUNGRY", "forks": [3, null, null, 3]}, {"event_number": 10, "time": 0.636, "actor": "Philosopher 2", "state": "WAITING", "forks": [3, null, null, 3]}, {"event_number": 11, "time": 0.636, "actor": "Philosopher 2", "state": "ACQUIRING", "forks": [3, null, null, 3]}, {"event_number": 12, "time": 0.966, "actor": "Philosopher 0", "state": "HUNGRY", "forks": [3, null, 2, 3]}, {"event_number": 13, "time": 0.966, "actor": "Philosopher 0", "state": "WAITING", "forks": [3, null, 2, 3]}, {"event_number": 14, "time": 0.966, "actor": "Philosopher 0", "state": "ACQUIRING", "forks": [3, null, 2, 3]}, {"event_number": 15, "time": 0.969, "actor": "Philosopher 1", "state": "HUNGRY", "forks": [3, null, 2, 3]}, {"event_number": 16, "time": 0.969, "actor": "Philosopher 1", "state": "WAITING", "forks": [3, null, 2, 3]}, {"event_number": 17, "time": 1.489, "actor": "Philosopher 3", "state": "RELEASING", "forks": [3, null, 2, 3]}, {"event_number": 18, "time": 1.489, "actor": "Philosopher 1", "state": "ACQUIRING", "forks": [null, null, 2, null]}, {"event_number": 19, "time": 1.49, "actor": "Philosopher 2", "state": "EATING", "forks": [0, 1, 2, 2]}, {"event_number": 20, "time": 1.959, "actor": "Philosopher 3", "state": "FINISHED", "forks": [0, 1, 2, 2]}, {"event_number": 21, "time": 2.139, "actor": "Philosopher 2", "state": "RELEASING", "forks": [0, 1, 2, 2]}, {"event_number": 22, "time": 2.14, "actor": "Philosopher 1", "state": "EATING", "forks": [0, 1, 1, null]}, {"event_number": 23, "time": 2.578, "actor": "Philosopher 2", "state": "FINISHED", "forks": [0, 1, 1, null]}, {"event_number": 24, "time": 3.019, "actor": "Philosopher 1", "state": "RELEASING", "forks": [0, 1, 1, null]}, {"event_number": 25, "time": 3.02, "actor": "Philosopher 0", "state": "EATING", "forks": [0, 0, null, null]}, {"event_number": 26, "time": 3.48, "actor": "Philosopher 1", "state": "FINISHED", "forks": [0, 0, null, null]}, {"event_number": 27, "time": 3.753, "actor": "Philosopher 0", "state": "RELEASING", "forks": [0, 0, null, null]}, {"event_number": 28, "time": 4.231, "actor": "Philosopher 0", "state": "FINISHED", "forks": [null, null, null, null]}];
+
+let currentIndex = 0;
+let timer = null;
+
+
+function updateSimulation() {
+
+    if (currentIndex >= snapshots.length) {
+        pauseSimulation();
+        return;
+    }
+
+    const snapshot = snapshots[currentIndex];
+
+    // Update philosopher states.
+    for (let i = 0; i < 4; i++) {
+
+        const philosopher = document.getElementById("p" + i);
+        const stateElement = document.getElementById("p" + i + "-state");
+
+        const actor = "Philosopher " + i;
+
+        let state = "IDLE";
+
+        for (let j = 0; j <= currentIndex; j++) {
+
+            if (snapshots[j].actor === actor) {
+                state = snapshots[j].state;
+            }
+
+        }
+
+        stateElement.textContent = state;
+
+        philosopher.className =
+            "philosopher p" + i +
+            " state-" + state;
+
+        if (actor === snapshot.actor) {
+            philosopher.classList.add("active");
+        }
+
+    }
+
+
+    // Update fork ownership.
+    const forkContainer = document.getElementById("forkStatus");
+
+    forkContainer.innerHTML = "";
+
+    for (let i = 0; i < 4; i++) {
+
+        const owner = snapshot.forks[i];
+
+        const fork = document.getElementById("f" + i);
+
+        if (owner !== null) {
+
+            fork.textContent =
+                "Fork " + i + " → P" + owner;
+
+            fork.classList.add("owned");
+
+        } else {
+
+            fork.textContent =
+                "Fork " + i + " → Available";
+
+            fork.classList.remove("owned");
+
+        }
+
+
+        const status = document.createElement("div");
+
+        status.className =
+            "fork " +
+            (owner !== null ? "owned" : "");
+
+        status.textContent =
+            owner !== null
+            ? "Fork " + i + " → Philosopher " + owner
+            : "Fork " + i + " → Available";
+
+        forkContainer.appendChild(status);
+
+    }
+
+
+    // Current event.
+    document.getElementById("currentEvent").textContent =
+        "Event " +
+        snapshot.event_number +
+        " / " +
+        snapshots.length +
+        " — " +
+        snapshot.actor +
+        " → " +
+        snapshot.state;
+
+
+    // Progress.
+    document.getElementById("progress").textContent =
+        snapshot.event_number +
+        " / " +
+        snapshots.length;
+
+
+    // Event timeline.
+    const log = document.getElementById("eventLog");
+
+    log.innerHTML = "";
+
+    snapshots.forEach((event, index) => {
+
+        const row = document.createElement("div");
+
+        row.className =
+            "event " +
+            (index === currentIndex ? "current" : "");
+
+        row.textContent =
+            "#" +
+            event.event_number +
+            "  " +
+            event.actor +
+            " → " +
+            event.state;
+
+        log.appendChild(row);
+
+    });
+
+    log.scrollTop = log.scrollHeight;
+
+}
+
+
+function startSimulation() {
+
+    if (timer !== null) {
+        return;
+    }
+
+    timer = setInterval(() => {
+
+        updateSimulation();
+
+        currentIndex++;
+
+        if (currentIndex >= snapshots.length) {
+            pauseSimulation();
+        }
+
+    }, Number(document.getElementById("speed").value));
+
+}
+
+
+function pauseSimulation() {
+
+    if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+    }
+
+}
+
+
+function resetSimulation() {
+
+    pauseSimulation();
+
+    currentIndex = 0;
+
+    document.getElementById("progress").textContent =
+        "0 / " +
+        snapshots.length;
+
+    document.getElementById("currentEvent").textContent =
+        "Simulation ready";
+
+    updateSimulation();
+
+}
+
+
+updateSimulation();
+
+</script>
+
+</body>
+
+</html>
