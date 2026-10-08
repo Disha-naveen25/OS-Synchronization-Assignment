@@ -1,8 +1,9 @@
-\# AI Prompt Log
+# AI Prompt Log
 
 
 
-\## 1. AI Tool Used
+
+## 1. AI Tool Used
 
 
 
