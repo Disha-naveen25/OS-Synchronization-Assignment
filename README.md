@@ -1,4 +1,3 @@
----
 ```markdown
 # AI-Assisted Synchronization Algorithms with Program-Generated HTML Simulation
 
